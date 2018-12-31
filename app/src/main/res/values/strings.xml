@@ -1,0 +1,20 @@
+<resources>
+    <string name="app_name" translatable="false">Bad News Baby</string>
+    <string name="email_header" translatable="false">Your Email Address (optionnal)</string>
+    <string name="key_header" translatable="false">Guardian Key</string>
+    <string name="checkbox_header" translatable="false">Use Default</string>
+    <string name="checkbox_text" translatable="false">Use the default Guardian application Key</string>
+    <string name="default_key">0528910f-90e1-4678-b91d-dd32d6f56805</string>
+    <string name="login_label" translatable="false">Login Activity</string>
+    <string name="news_activity">Bad News Reader</string>
+    <string name="hint_username">Username/email (Optionnal)</string>
+    <string name="hint_password">Your Guardian KEY</string>
+    <string name="button_next">Next</string>
+    <string name="button_cancel">Cancel</string>
+    <string name="error_password">Password must contain at least 8 characters.</string>
+    <string name="filter_title">Filter</string>
+    <string name="search_title">Search</string>
+    <string name="check_box_text">Use Donald Trump Fake News KEY</string>
+
+
+</resources>
