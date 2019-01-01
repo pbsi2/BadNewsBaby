@@ -41,7 +41,7 @@ public class BadNews {
     /**
      * Author of the article
      */
-    public final String summary;
+    public final String type;
     /**
      * Tdate
      */
@@ -55,15 +55,15 @@ public class BadNews {
      * @param section is the section
      * @param author  is whether or not a author is listed
      * @param link    is the link tp the source
-     * @param summary is the description
+     * @param type is the description
      * @param date    is ,well, the date
      */
-    public BadNews(String title, String section, String author, String link, String summary, String date) {
+    public BadNews(String title, String section, String link, String author, String type, String date) {
         this.title = title;
         this.section = section;
         this.author = author;
         this.link = link;
-        this.summary = summary;
+        this.type = type;
         this.date = date;
 
     }
@@ -76,19 +76,19 @@ public class BadNews {
         return section;
     }
 
-    public String getauthor() {
+    public String getAuthor() {
         return author;
     }
 
-    public String getlink() {
+    public String getLink() {
         return link;
     }
 
-    public String getsummary() {
-        return summary;
+    public String getType() {
+        return type;
     }
 
-    public String getdate() {
+    public String getDate() {
         return date;
     }
 

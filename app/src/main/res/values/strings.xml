@@ -1,11 +1,11 @@
 <resources>
-    <string name="app_name" translatable="false">Bad News Baby</string>
-    <string name="email_header" translatable="false">Your Email Address (optionnal)</string>
-    <string name="key_header" translatable="false">Guardian Key</string>
-    <string name="checkbox_header" translatable="false">Use Default</string>
-    <string name="checkbox_text" translatable="false">Use the default Guardian application Key</string>
+    <string name="app_name">Bad News Baby</string>
+    <string name="email_header">Your Email Address (optionnal)</string>
+    <string name="key_header">Guardian Key</string>
+    <string name="checkbox_header">Use Default</string>
+    <string name="checkbox_text">Use the default Guardian application Key</string>
     <string name="default_key">0528910f-90e1-4678-b91d-dd32d6f56805</string>
-    <string name="login_label" translatable="false">Login Activity</string>
+    <string name="login_label">Login Activity</string>
     <string name="news_activity">Bad News Reader</string>
     <string name="hint_username">Username/email (Optionnal)</string>
     <string name="hint_password">Your Guardian KEY</string>
@@ -15,6 +15,13 @@
     <string name="filter_title">Filter</string>
     <string name="search_title">Search</string>
     <string name="check_box_text">Use Donald Trump Fake News KEY</string>
+    <string name="newsid_header">TITLE</string>
+    <string name="section_header">SECTION</string>
+    <string name="link_header">SOURCE LINK</string>
+    <string name="author_header">AUTHOR</string>
+    <string name="type_header">NEWS TYPE</string>
+    <string name="date_header">DATE PUBLISHED</string>
+    <string name="intro">Welcome to Bad News Baby! The Android app that let you get the last 24 hours of normal news as selected by YOU or the "Fake News" as Donald Trump would do.\n\nEither enter the Key that you can get or already got from "The Guardian API" site and Bad News Baby will provide you with a selection of News Items\n\nOR\n\nUse "The Donald" default KEY to get everything related to him in the News.</string>
 
 
 </resources>

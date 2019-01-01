@@ -6,6 +6,7 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:textColorSecondary">@color/mtrl_dark_on_surface_disabled</item>
     </style>
     <!-- Base application theme. -->
     <style name="Theme.News" parent="Theme.MaterialComponents.Light.NoActionBar">
@@ -21,6 +22,7 @@
     <style name="Widget.News.TextInputLayout" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
         <item name="hintTextAppearance">@style/TextAppearance.News.TextInputLayout.HintText</item>
         <item name="android:paddingBottom">8dp</item>
+        <item name="android:layout_margin">12dp</item>
     </style>
 
     <style name="TextAppearance.News.TextInputLayout.HintText" parent="TextAppearance.MaterialComponents.Subtitle2">

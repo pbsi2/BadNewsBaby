@@ -1,5 +1,6 @@
 package com.pbsi2.badnewsbaby;
 
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.MyViewHolder> {
     private ArrayList<BadNews> mNews;
+    // Clean all elements of the recycler
 
 
     // Provide a suitable constructor (depends on the kind of dataset)
@@ -38,25 +40,34 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.MyViewHolder> 
 
         TextView stitle = linearLayout.findViewById(R.id.newsid);
         stitle.setText(mNews.get(position).getTitle());
+
         TextView ssection = linearLayout.findViewById(R.id.section);
         ssection.setText(mNews.get(position).getSection());
-        TextView sauthor = linearLayout.findViewById(R.id.first_name);
-        sauthor.setText(mNews.get(position).getauthor());
+
+        TextView sauthor = linearLayout.findViewById(R.id.author_name);
+        sauthor.setText(mNews.get(position).getAuthor());
+
         TextView slink = linearLayout.findViewById(R.id.urltxt);
-        slink.setText(mNews.get(position).getlink());
-        TextView sdescription = linearLayout.findViewById(R.id.description);
-        sdescription.setText(mNews.get(position).getsummary());
-        TextView sfirstname = linearLayout.findViewById(R.id.first_name);
-        sfirstname.setText(mNews.get(position).getdate());
-        TextView slastname = linearLayout.findViewById(R.id.last_name);
-        slastname.setText("XXXXXXXXXXXXXXXX");
+        slink.setText(Html.fromHtml("<a href=\"" +
+                mNews.get(position).getLink() +
+                "\">" + mNews.get(position).getLink() +
+                "</a>", Html.FROM_HTML_MODE_COMPACT));
+
+        TextView sdescription = linearLayout.findViewById(R.id.type_txt);
+        sdescription.setText(mNews.get(position).getType());
+
+        TextView sdate = linearLayout.findViewById(R.id.date_text);
+        String dateTemp = mNews.get(position).getDate();
+        sdate.setText(dateTemp.substring(0, Math.min(dateTemp.length(), 10)));
+
+        TextView slastname = linearLayout.findViewById(R.id.author_name);
+        slastname.setText(mNews.get(position).getAuthor());
 
 
         slink.setOnClickListener(new View.OnClickListener() {
             // The code in this method will be executed when the numbers category is clicked on.
             @Override
             public void onClick(View view) {
-
             }
 
         });

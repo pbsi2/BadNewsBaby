@@ -33,12 +33,24 @@ public class LoginFragment extends Fragment {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (defaultKeyBox.isChecked()) {
                     MainActivity.keyText = getString(R.string.default_key);
-                    MainActivity.guardianUrl = "https://content.guardianapis.com/search?from-date=2018-12-26&to-date=2018-12-27&show-tags=contributor&q=trump&api-key=0528910f-90e1-4678-b91d-dd32d6f56805";
+                    MainActivity.guardianUrl = "https://content.guardianapis.com/search?from-date="
+                            + MainActivity.startDate
+                            + "&to-date="
+                            + MainActivity.endDate
+                            + "&show-tags=contributor&q=trump&api-key=0528910f-90e1-4678-b91d-dd32d6f56805";
                     passwordEditText.setEnabled(false);
-                    passwordTextInput.setBoxBackgroundColor(getResources().getColor(R.color.colorAccent, null));
+                    passwordTextInput.setBoxBackgroundColor(getResources().getColor(R.color.design_default_color_error));
                 } else {
+                    passwordEditText.setEnabled(true);
+                    passwordTextInput.setBoxBackgroundColor(getResources().getColor(R.color.design_default_color_background, null));
+
                     MainActivity.keyText = passwordEditText.getText().toString();
-                    MainActivity.guardianUrl = "https://content.guardianapis.com/search?from-date=2018-12-26&to-date=2018-12-27&show-tags=contributor&api-key=" + MainActivity.keyText;
+                    MainActivity.guardianUrl = "https://content.guardianapis.com/search?from-date="
+                            + MainActivity.startDate
+                            + "&to-date="
+                            + MainActivity.endDate
+                            + "&show-tags=contributor&api-key="
+                            + MainActivity.keyText;
                 }
             }
         });
