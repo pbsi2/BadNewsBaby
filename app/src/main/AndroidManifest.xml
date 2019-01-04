@@ -12,15 +12,18 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity">
+        <activity android:name=".MainActivity"
+            android:theme="@style/AppTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".NewsActivity">
-            android:name="com.pbsi2.badnewsbaby.GuitarsActivity"
+        <activity android:name=".NewsActivity"
+            android:theme="@style/AppTheme">
+            android:label=News for YOU!"
+            android:name="com.pbsi2.badnewsbaby.NewsActivity"
             android:label="@string/news_activity"
             android:parentActivityName="com.pbsi2.badnewsbaby.MainActivity">
             <!-- Parent activity meta-data to support 4.0 and lower -->

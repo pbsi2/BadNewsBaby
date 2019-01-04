@@ -7,45 +7,61 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <ScrollView
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-
-        <RelativeLayout
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:layout_height="wrap_content"
+            android:background="?attr/colorPrimary"
+            android:minHeight="?attr/actionBarSize"
+            android:theme="?attr/actionBarTheme" />
 
-            <ImageView
-                android:id="@+id/imageView"
-                android:layout_width="match_parent"
-                android:layout_height="120dp"
-                app:srcCompat="@drawable/logo" />
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
-            <TextView
-                android:id="@+id/textView"
-                style="@style/TextAppearance.MaterialComponents.Headline6"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/imageView"
-                android:layout_alignParentStart="true"
-                android:layout_gravity="top"
-                android:layout_marginTop="0dp"
-                android:gravity="top"
-                android:padding="8dp"
-                android:text="@string/intro" />
 
-            <Button
-                android:id="@+id/button"
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/textView"
-                android:layout_gravity="top|right"
-                android:layout_marginTop="48dp"
-                android:layout_marginBottom="48dp"
-                android:rotation="-15"
-                android:text="LET'S GET ON WITH IT!" />
-        </RelativeLayout>
-    </ScrollView>
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:id="@+id/imageView"
+                    android:layout_width="match_parent"
+                    android:layout_height="120dp"
+                    app:srcCompat="@drawable/logo" />
+
+                <TextView
+                    android:id="@+id/textView"
+                    style="@style/TextAppearance.MaterialComponents.Headline6"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/imageView"
+                    android:layout_alignParentStart="true"
+                    android:layout_gravity="top"
+                    android:layout_marginTop="0dp"
+                    android:gravity="top"
+                    android:padding="8dp"
+                    android:text="@string/intro" />
+
+                <Button
+                    android:id="@+id/button"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/textView"
+                    android:layout_gravity="top|right"
+                    android:layout_marginTop="48dp"
+                    android:layout_marginBottom="48dp"
+                    android:rotation="-15"
+                    android:text="LET'S GET ON WITH IT!" />
+            </RelativeLayout>
+        </ScrollView>
+    </LinearLayout>
+
+
 </FrameLayout>

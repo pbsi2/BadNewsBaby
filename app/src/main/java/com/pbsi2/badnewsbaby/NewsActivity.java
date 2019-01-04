@@ -3,32 +3,45 @@ package com.pbsi2.badnewsbaby;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
 import android.widget.Toast;
+
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.view.ActionMode;
+import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-public class NewsActivity extends AppCompatActivity {
-    private RecyclerView mRecyclerView;
-    private RecyclerView.Adapter mAdapter;
-    private RecyclerView.LayoutManager mLayoutManager;
+public class NewsActivity extends AppCompatActivity implements NewsAdapter.ClickAdapterListener {
+
+    RecyclerView mRecyclerView;
+    NewsAdapter mAdapter;
+    RecyclerView.LayoutManager mLayoutManager;
+    ArrayList<BadNews> yourNews = new ArrayList<BadNews>();
+    FloatingActionButton fab;
+    private GetNews getnews;
+    boolean asyncdone = false;
     private String TAG = NewsActivity.class.getSimpleName();
-    private ArrayList<BadNews> yourNews = new ArrayList<BadNews>();
-    private SwipeRefreshLayout swipeContainer;
-
+    private ActionModeCallback actionModeCallback;
+    private ActionMode actionMode;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.recycler_news_layout);
+
 
         mRecyclerView = findViewById(R.id.newsview);
         mRecyclerView.setHasFixedSize(true);
@@ -38,15 +51,90 @@ public class NewsActivity extends AppCompatActivity {
         // For a GRID
         //mLayoutManager = new GridLayoutManager(this,5);
         mRecyclerView.setLayoutManager(mLayoutManager);
-        new GetNews().execute();
+        mRecyclerView.setItemAnimator(new DefaultItemAnimator());
+        mRecyclerView.addItemDecoration(new DividerItemDecoration(this, LinearLayoutManager.VERTICAL));
+        actionModeCallback = new ActionModeCallback();
+        getnews = new GetNews(mRecyclerView,this);
+        getnews.execute();
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
 
+        fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                fab.setVisibility(View.GONE);
+                getnews.execute();
+
+            }
+        });
     }
 
-    private class GetNews extends AsyncTask<Void, Void, Void> {
+    @Override
+    public void onRowClicked(int position) {
+        enableActionMode(position);
+    }
+
+    @Override
+    public void onRowLongClicked(int position) {
+        enableActionMode(position);
+    }
+
+    private void enableActionMode(int position) {
+        if (actionMode == null) {
+            actionMode = startSupportActionMode(actionModeCallback);
+        }
+        toggleSelection(position);
+    }
+
+    private void toggleSelection(int position) {
+
+        mAdapter.toggleSelection(position);
+        int count = mAdapter.getSelectedItemCount();
+
+        if (count == 0) {
+            actionMode.finish();
+            actionMode = null;
+        } else {
+            actionMode.setTitle(String.valueOf(count));
+            actionMode.invalidate();
+        }
+    }
+
+    private void selectAll() {
+        mAdapter.selectAll();
+        int count = mAdapter.getSelectedItemCount();
+
+        if (count == 0) {
+            actionMode.finish();
+        } else {
+            actionMode.setTitle(String.valueOf(count));
+            actionMode.invalidate();
+        }
+
+        actionMode = null;
+    }
+
+    private void deleteRows() {
+        actionMode = null;
+    }
+
+    private void updateColoredRows() {
+
+        actionMode = null;
+    }
+
+    private class GetNews extends AsyncTask<Object, Object, Object> {
         private String TAG = NewsActivity.class.getSimpleName();
+        private NewsAdapter.ClickAdapterListener listener;
+        private RecyclerView view;
+        public GetNews(RecyclerView view, NewsAdapter.ClickAdapterListener listener) {
+            this.view = view;
+            this.listener = listener;
+        }
 
         @Override
-        protected Void doInBackground(Void... arg0) {
+        protected Void doInBackground(Object... params) {
             HttpHandler sh = new HttpHandler();
             // Making a request to url and getting response
             String url = MainActivity.guardianUrl;
@@ -88,7 +176,7 @@ public class NewsActivity extends AppCompatActivity {
 
                             }
                         }
-                        yourNews.add(new BadNews(wtitle, section, link, author, type, date));
+                        yourNews.add(new BadNews(wtitle, section, link, author, type, date, false));
                     }
                 } catch (final JSONException e) {
                     Log.e(TAG, "Json parsing error: " + e.getMessage());
@@ -117,12 +205,64 @@ public class NewsActivity extends AppCompatActivity {
 
             return null;
         }
+
         @Override
-        protected void onPostExecute(Void result) {
-            super.onPostExecute(result);
-            NewsAdapter mAdapter = new NewsAdapter(yourNews);
+        protected void onPostExecute(Object o) {
+            super.onPostExecute(o);
+            NewsAdapter mAdapter = new NewsAdapter(this.view.getContext(),yourNews,this.listener);
             mRecyclerView.setAdapter(mAdapter);
         }
+
     }
 
+    private class ActionModeCallback implements ActionMode.Callback {
+        @Override
+        public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+            mode.getMenuInflater().inflate(R.menu.menu_news, menu);
+
+            return true;
+        }
+
+        @Override
+        public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+            return false;
+        }
+
+        @Override
+        public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+            Log.d("Clicked Action", "here");
+            switch (item.getItemId()) {
+
+
+                case R.id.action_delete:
+                    // delete all the selected rows
+                    deleteRows();
+                    mode.finish();
+                    return true;
+
+                case R.id.action_color:
+                    updateColoredRows();
+                    mode.finish();
+                    return true;
+
+                case R.id.action_select_all:
+                    selectAll();
+                    return true;
+
+                case R.id.action_refresh:
+                    getnews.execute();
+                    mode.finish();
+                    return true;
+
+                default:
+                    return false;
+            }
+        }
+
+        @Override
+        public void onDestroyActionMode(ActionMode mode) {
+            mAdapter.clearSelections();
+            actionMode = null;
+        }
+    }
 }

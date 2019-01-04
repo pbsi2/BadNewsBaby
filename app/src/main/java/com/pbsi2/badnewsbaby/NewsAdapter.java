@@ -1,24 +1,61 @@
 package com.pbsi2.badnewsbaby;
 
+import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
+import android.os.Build;
 import android.text.Html;
+import android.text.Spanned;
+import android.util.SparseBooleanArray;
+import android.view.HapticFeedbackConstants;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import androidx.recyclerview.widget.RecyclerView;
 
+import static androidx.core.content.ContextCompat.startActivity;
+
 public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.MyViewHolder> {
+    private Context mContext;
     private ArrayList<BadNews> mNews;
-    // Clean all elements of the recycler
+    private ClickAdapterListener listener;
+    private SparseBooleanArray selectedItems;
+    private static int currentSelectedIndex = -1;
+    // Provide a reference to the views for each data item
+    // Complex data items may need more than one view per item, and
+    // you provide access to all the views for a data item in a view holder
+    public class MyViewHolder extends RecyclerView.ViewHolder implements View.OnLongClickListener {
+        // each data item is just a string in this case
+        //public LinearLayout mLinearLayout;
+        public RelativeLayout relativeLayout;
+        public MyViewHolder(View v) {
 
-
+            super(v);
+            TextView slink = relativeLayout.findViewById(R.id.link_text);
+            relativeLayout = (RelativeLayout) v.findViewById(R.id.relativeLayout);
+            v.setOnLongClickListener(this);
+        }
+        @Override
+        public boolean onLongClick(View view) {
+            listener.onRowLongClicked(getAdapterPosition());
+            view.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
+            return true;
+        }
+    }
     // Provide a suitable constructor (depends on the kind of dataset)
-    public NewsAdapter(ArrayList<BadNews> news) {
+    public NewsAdapter(Context mContext, ArrayList<BadNews> news, ClickAdapterListener listener) {
+
+        this.mContext = mContext;
         mNews = news;
+        this.listener = listener;
+        selectedItems = new SparseBooleanArray();
     }
 
     // Create new views (invoked by the layout manager)
@@ -26,52 +63,63 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.MyViewHolder> 
     public NewsAdapter.MyViewHolder onCreateViewHolder(ViewGroup parent,
                                                        int viewType) {
         // create a new view
-        LinearLayout ll = (LinearLayout) LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.news_single_recycler, parent, false);
+        View ll = LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.news_single_layout, parent, false);
         return new MyViewHolder(ll);
     }
 
     // Replace the contents of a view (invoked by the layout manager)
     @Override
-    public void onBindViewHolder(MyViewHolder holder, int position) {
+    public void onBindViewHolder(final MyViewHolder holder, final int position) {
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
-        LinearLayout linearLayout = holder.mLinearLayout;
+        RelativeLayout linearLayout = holder.relativeLayout;
 
-        TextView stitle = linearLayout.findViewById(R.id.newsid);
+        TextView stitle = linearLayout.findViewById(R.id.news_text);
         stitle.setText(mNews.get(position).getTitle());
 
-        TextView ssection = linearLayout.findViewById(R.id.section);
+        TextView ssection = linearLayout.findViewById(R.id.section_text);
         ssection.setText(mNews.get(position).getSection());
 
-        TextView sauthor = linearLayout.findViewById(R.id.author_name);
-        sauthor.setText(mNews.get(position).getAuthor());
+        TextView slink = linearLayout.findViewById(R.id.link_text);
+        final String myUrl = mNews.get(position).getLink();
+        final String surl = "<a href=\""
+                + myUrl
+                + "\">"
+                + myUrl
+                + "</a>";
 
-        TextView slink = linearLayout.findViewById(R.id.urltxt);
-        slink.setText(Html.fromHtml("<a href=\"" +
-                mNews.get(position).getLink() +
-                "\">" + mNews.get(position).getLink() +
-                "</a>", Html.FROM_HTML_MODE_COMPACT));
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                slink.setText(Html.fromHtml(surl, Html.FROM_HTML_MODE_COMPACT));
+            } else {
+                slink.setText(Html.fromHtml(surl));
+            }
 
-        TextView sdescription = linearLayout.findViewById(R.id.type_txt);
-        sdescription.setText(mNews.get(position).getType());
+        //slink.setText(Html.fromHtml(surl, Html.FROM_HTML_MODE_COMPACT));
+        TextView sAuthorName = linearLayout.findViewById(R.id.author_text);
+        sAuthorName.setText(mNews.get(position).getAuthor());
+
+        TextView stype = linearLayout.findViewById(R.id.type_text);
+        stype.setText(mNews.get(position).getType());
 
         TextView sdate = linearLayout.findViewById(R.id.date_text);
         String dateTemp = mNews.get(position).getDate();
         sdate.setText(dateTemp.substring(0, Math.min(dateTemp.length(), 10)));
 
-        TextView slastname = linearLayout.findViewById(R.id.author_name);
-        slastname.setText(mNews.get(position).getAuthor());
-
-
         slink.setOnClickListener(new View.OnClickListener() {
             // The code in this method will be executed when the numbers category is clicked on.
             @Override
             public void onClick(View view) {
+                Uri webpage = Uri.parse(myUrl);
+                Intent sBrowser = new Intent(Intent.ACTION_VIEW, webpage);
+                startActivity(view.getContext(), sBrowser, null);
             }
 
         });
-
+        //if (mNews.get(position).colored)
+        //    holder.textView.setTextColor(mContext.getResources().getColor(android.R.color.holo_red_dark));
+        //holder.itemView.setActivated(selectedItems.get(position, false));
+        //applyClickEvents(holder, position);
     }
 
     // Return the size of your dataset (invoked by the layout manager)
@@ -80,16 +128,83 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.MyViewHolder> 
         return mNews.size();
     }
 
-    // Provide a reference to the views for each data item
-    // Complex data items may need more than one view per item, and
-    // you provide access to all the views for a data item in a view holder
-    public static class MyViewHolder extends RecyclerView.ViewHolder {
-        // each data item is just a string in this case
-        public LinearLayout mLinearLayout;
+    private void applyClickEvents(MyViewHolder holder, final int position) {
+        holder.relativeLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                listener.onRowClicked(position);
+            }
+        });
 
-        public MyViewHolder(LinearLayout v) {
-            super(v);
-            mLinearLayout = v;
-        }
+        holder.relativeLayout.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                listener.onRowLongClicked(position);
+                view.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
+                return true;
+            }
+        });
     }
+
+
+   
+
+    public void toggleSelection(int pos) {
+        currentSelectedIndex = pos;
+        if (selectedItems.get(pos, false)) {
+            selectedItems.delete(pos);
+        } else {
+            selectedItems.put(pos, true);
+        }
+        notifyItemChanged(pos);
+    }
+
+    public void selectAll() {
+
+        for (int i = 0; i < getItemCount(); i++)
+            selectedItems.put(i, true);
+        notifyDataSetChanged();
+
+    }
+
+
+    public void clearSelections() {
+        selectedItems.clear();
+        notifyDataSetChanged();
+    }
+
+    public int getSelectedItemCount() {
+        return selectedItems.size();
+    }
+
+    public List getSelectedItems() {
+        List items =
+                new ArrayList(selectedItems.size());
+        for (int i = 0; i < selectedItems.size(); i++) {
+            items.add(selectedItems.keyAt(i));
+        }
+        return items;
+    }
+
+    public void removeData(int position) {
+        mNews.remove(position);
+        resetCurrentIndex();
+    }
+
+    public void updateData(int position) {
+        mNews.get(position).colored = true;
+        resetCurrentIndex();
+    }
+
+    private void resetCurrentIndex() {
+        currentSelectedIndex = -1;
+    }
+
+    public interface ClickAdapterListener {
+
+        void onRowClicked(int position);
+
+        void onRowLongClicked(int position);
+    }
+
 }
