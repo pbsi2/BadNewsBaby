@@ -18,7 +18,7 @@
     <item
         android:id="@+id/action_refresh"
         android:icon="@drawable/ic_refresh"
-        android:orderInCategory="100"
+        android:orderInCategory="500"
         android:title="Refresh"
         app:showAsAction="always" />
 
@@ -26,6 +26,12 @@
         android:id="@+id/action_select_all"
         android:icon="@drawable/ic_select_all"
         android:orderInCategory="400"
+        android:title="ALL"
+        app:showAsAction="always" />
+    <item
+        android:id="@+id/action_favorite"
+        android:icon="@drawable/ic_favorite"
+        android:orderInCategory="100"
         android:title="ALL"
         app:showAsAction="always" />
 

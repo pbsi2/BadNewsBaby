@@ -39,7 +39,7 @@ public class LoginFragment extends Fragment {
                             + MainActivity.endDate
                             + "&show-tags=contributor&q=trump&api-key=0528910f-90e1-4678-b91d-dd32d6f56805";
                     passwordEditText.setEnabled(false);
-                    passwordTextInput.setBoxBackgroundColor(getResources().getColor(R.color.design_default_color_error));
+                    passwordTextInput.setBoxBackgroundColor(getResources().getColor(R.color.disabled, null));
                 } else {
                     passwordEditText.setEnabled(true);
                     passwordTextInput.setBoxBackgroundColor(getResources().getColor(R.color.design_default_color_background, null));

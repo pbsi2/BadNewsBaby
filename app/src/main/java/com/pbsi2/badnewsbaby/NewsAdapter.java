@@ -5,14 +5,12 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.text.Html;
-import android.text.Spanned;
 import android.util.SparseBooleanArray;
 import android.view.HapticFeedbackConstants;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -28,27 +26,16 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.MyViewHolder> 
     private ClickAdapterListener listener;
     private SparseBooleanArray selectedItems;
     private static int currentSelectedIndex = -1;
-    // Provide a reference to the views for each data item
-    // Complex data items may need more than one view per item, and
-    // you provide access to all the views for a data item in a view holder
-    public class MyViewHolder extends RecyclerView.ViewHolder implements View.OnLongClickListener {
-        // each data item is just a string in this case
-        //public LinearLayout mLinearLayout;
-        public RelativeLayout relativeLayout;
-        public MyViewHolder(View v) {
-
-            super(v);
-            TextView slink = relativeLayout.findViewById(R.id.link_text);
-            relativeLayout = (RelativeLayout) v.findViewById(R.id.relativeLayout);
-            v.setOnLongClickListener(this);
-        }
-        @Override
-        public boolean onLongClick(View view) {
-            listener.onRowLongClicked(getAdapterPosition());
-            view.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
-            return true;
-        }
+    // Create new views (invoked by the layout manager)
+    @Override
+    public NewsAdapter.MyViewHolder onCreateViewHolder(ViewGroup parent,
+                                                       int viewType) {
+        // create a new view
+        View itemViews = LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.news_items_layout, parent, false);
+        return new MyViewHolder(itemViews);
     }
+
     // Provide a suitable constructor (depends on the kind of dataset)
     public NewsAdapter(Context mContext, ArrayList<BadNews> news, ClickAdapterListener listener) {
 
@@ -58,22 +45,12 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.MyViewHolder> 
         selectedItems = new SparseBooleanArray();
     }
 
-    // Create new views (invoked by the layout manager)
-    @Override
-    public NewsAdapter.MyViewHolder onCreateViewHolder(ViewGroup parent,
-                                                       int viewType) {
-        // create a new view
-        View ll = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.news_single_layout, parent, false);
-        return new MyViewHolder(ll);
-    }
-
     // Replace the contents of a view (invoked by the layout manager)
     @Override
     public void onBindViewHolder(final MyViewHolder holder, final int position) {
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
-        RelativeLayout linearLayout = holder.relativeLayout;
+        LinearLayout linearLayout = holder.linearLayout;
 
         TextView stitle = linearLayout.findViewById(R.id.news_text);
         stitle.setText(mNews.get(position).getTitle());
@@ -122,21 +99,15 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.MyViewHolder> 
         //applyClickEvents(holder, position);
     }
 
-    // Return the size of your dataset (invoked by the layout manager)
-    @Override
-    public int getItemCount() {
-        return mNews.size();
-    }
-
     private void applyClickEvents(MyViewHolder holder, final int position) {
-        holder.relativeLayout.setOnClickListener(new View.OnClickListener() {
+        holder.linearLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 listener.onRowClicked(position);
             }
         });
 
-        holder.relativeLayout.setOnLongClickListener(new View.OnLongClickListener() {
+        holder.linearLayout.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
                 listener.onRowLongClicked(position);
@@ -144,6 +115,37 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.MyViewHolder> 
                 return true;
             }
         });
+    }
+
+    // Return the size of your dataset (invoked by the layout manager)
+    @Override
+    public int getItemCount() {
+        return mNews.size();
+    }
+
+    // Provide a reference to the views for each data item
+    // Complex data items may need more than one view per item, and
+    // you provide access to all the views for a data item in a view holder
+    public class MyViewHolder extends RecyclerView.ViewHolder implements View.OnLongClickListener {
+        // each data item is just a string in this case
+        //public LinearLayout mLinearLayout;
+        public LinearLayout linearLayout;
+
+        public MyViewHolder(View v) {
+
+            super(v);
+
+            linearLayout = v.findViewById(R.id.linearLayout);
+            TextView slink = v.findViewById(R.id.link_text);
+            v.setOnLongClickListener(this);
+        }
+
+        @Override
+        public boolean onLongClick(View view) {
+            listener.onRowLongClicked(getAdapterPosition());
+            view.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
+            return true;
+        }
     }
 
 

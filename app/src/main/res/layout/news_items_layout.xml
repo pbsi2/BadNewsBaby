@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/relativeLayout"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/linearLayout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/bg_list_row"
@@ -146,4 +146,4 @@
             android:padding="@dimen/text_padding"
             android:textAppearance="?attr/textAppearanceListItem" />
     </LinearLayout>
-</RelativeLayout>
+</LinearLayout>

@@ -7,4 +7,6 @@
     <color name="row_activated">#e65c2a</color>
     <color name="transparent">#01f1efef</color>
     <color name="foreground_material_light">#273677</color>
+    <color name="black">#000000</color>
+    <color name="disabled">#d7dff1</color>
 </resources>

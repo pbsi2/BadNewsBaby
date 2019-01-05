@@ -15,7 +15,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.view.ActionMode;
@@ -36,12 +35,13 @@ public class NewsActivity extends AppCompatActivity implements NewsAdapter.Click
     private String TAG = NewsActivity.class.getSimpleName();
     private ActionModeCallback actionModeCallback;
     private ActionMode actionMode;
-
+    private Toolbar nTopToolbar;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.recycler_news_layout);
-
+        setContentView(R.layout.news_main);
+        nTopToolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(nTopToolbar);
 
         mRecyclerView = findViewById(R.id.newsview);
         mRecyclerView.setHasFixedSize(true);
@@ -56,10 +56,10 @@ public class NewsActivity extends AppCompatActivity implements NewsAdapter.Click
         actionModeCallback = new ActionModeCallback();
         getnews = new GetNews(mRecyclerView,this);
         getnews.execute();
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -215,6 +215,31 @@ public class NewsActivity extends AppCompatActivity implements NewsAdapter.Click
 
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_news, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_refresh) {
+            Toast.makeText(NewsActivity.this, "News are refreshing", Toast.LENGTH_LONG).show();
+            getnews = new GetNews(mRecyclerView, this);
+            getnews.execute();
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
     private class ActionModeCallback implements ActionMode.Callback {
         @Override
         public boolean onCreateActionMode(ActionMode mode, Menu menu) {
@@ -250,6 +275,9 @@ public class NewsActivity extends AppCompatActivity implements NewsAdapter.Click
                     return true;
 
                 case R.id.action_refresh:
+                    Toast.makeText(getApplicationContext(),
+                            "Refresh has been clicked",
+                            Toast.LENGTH_LONG).show();
                     getnews.execute();
                     mode.finish();
                     return true;
