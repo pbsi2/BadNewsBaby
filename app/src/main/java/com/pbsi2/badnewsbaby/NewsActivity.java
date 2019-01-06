@@ -1,5 +1,6 @@
 package com.pbsi2.badnewsbaby;
 
+import android.app.ActionBar;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -31,7 +32,6 @@ public class NewsActivity extends AppCompatActivity implements NewsAdapter.Click
     ArrayList<BadNews> yourNews = new ArrayList<BadNews>();
     FloatingActionButton fab;
     private GetNews getnews;
-    boolean asyncdone = false;
     private String TAG = NewsActivity.class.getSimpleName();
     private ActionModeCallback actionModeCallback;
     private ActionMode actionMode;
@@ -42,6 +42,8 @@ public class NewsActivity extends AppCompatActivity implements NewsAdapter.Click
         setContentView(R.layout.news_main);
         nTopToolbar = findViewById(R.id.toolbar);
         setSupportActionBar(nTopToolbar);
+        nTopToolbar.setLogo(R.mipmap.ic_badnews);
+        ActionBar mactionBar = getActionBar();
 
         mRecyclerView = findViewById(R.id.newsview);
         mRecyclerView.setHasFixedSize(true);
@@ -56,8 +58,7 @@ public class NewsActivity extends AppCompatActivity implements NewsAdapter.Click
         actionModeCallback = new ActionModeCallback();
         getnews = new GetNews(mRecyclerView,this);
         getnews.execute();
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+
 
         fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -122,6 +123,36 @@ public class NewsActivity extends AppCompatActivity implements NewsAdapter.Click
     private void updateColoredRows() {
 
         actionMode = null;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_refresh) {
+            Toast.makeText(getApplicationContext(),
+                    "REFRESH REQUESTED",
+                    Toast.LENGTH_SHORT).show();
+            getnews = new GetNews(mRecyclerView, this);
+            getnews.execute();
+            Toast.makeText(getApplicationContext(),
+                    "REFRESH DONE",
+                    Toast.LENGTH_SHORT).show();
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_news, menu);
+        return true;
     }
 
     private class GetNews extends AsyncTask<Object, Object, Object> {
@@ -197,7 +228,7 @@ public class NewsActivity extends AppCompatActivity implements NewsAdapter.Click
                     @Override
                     public void run() {
                         Toast.makeText(getApplicationContext(),
-                                "Couldn't get json from server. Check LogCat for possible errors!",
+                                "Couldn't get data from Guardian.\nCheck you KEY!",
                                 Toast.LENGTH_LONG).show();
                     }
                 });
@@ -213,31 +244,6 @@ public class NewsActivity extends AppCompatActivity implements NewsAdapter.Click
             mRecyclerView.setAdapter(mAdapter);
         }
 
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_news, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_refresh) {
-            Toast.makeText(NewsActivity.this, "News are refreshing", Toast.LENGTH_LONG).show();
-            getnews = new GetNews(mRecyclerView, this);
-            getnews.execute();
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
     }
 
     private class ActionModeCallback implements ActionMode.Callback {
@@ -275,11 +281,12 @@ public class NewsActivity extends AppCompatActivity implements NewsAdapter.Click
                     return true;
 
                 case R.id.action_refresh:
-                    Toast.makeText(getApplicationContext(),
-                            "Refresh has been clicked",
-                            Toast.LENGTH_LONG).show();
+
                     getnews.execute();
                     mode.finish();
+                    Toast.makeText(getApplicationContext(),
+                            "REFRESH DONE",
+                            Toast.LENGTH_SHORT).show();
                     return true;
 
                 default:

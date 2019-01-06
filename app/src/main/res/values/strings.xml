@@ -23,6 +23,11 @@
     <string name="date_header">DATE PUBLISHED</string>
     <string name="intro">Welcome to Bad News Baby! The Android app that let you get the last 24 hours of normal news as selected by YOU or the "Fake News" as Donald Trump would do.\n\nEither enter the Key that you can get or already got from "The Guardian API" site and Bad News Baby will provide you with a selection of News Items\n\nOR\n\nUse "The Donald" default KEY to get everything related to him in the News.</string>
     <string name="main_button_text">LET\'S GET ON WITH IT!\nGO</string>
+    <string name="delete">Delete</string>
+    <string name="color">Color</string>
+    <string name="refresh">Refresh</string>
+    <string name="all">ALL</string>
+    <string name="favorite">Favorite</string>
 
 
 </resources>

@@ -59,7 +59,7 @@
                 android:id="@+id/password_edit_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="textPassword" />
+                android:inputType="text" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <RelativeLayout
@@ -73,7 +73,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
                 android:text="@string/button_next"
-                app:backgroundTint="@color/foreground_material_light_1" />
+                app:backgroundTint="@color/colorAccent" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/cancel_button"

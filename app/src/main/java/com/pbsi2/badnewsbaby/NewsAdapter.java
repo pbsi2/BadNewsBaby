@@ -14,27 +14,17 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import androidx.recyclerview.widget.RecyclerView;
 
 import static androidx.core.content.ContextCompat.startActivity;
 
 public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.MyViewHolder> {
+    private static int currentSelectedIndex = -1;
     private Context mContext;
     private ArrayList<BadNews> mNews;
     private ClickAdapterListener listener;
     private SparseBooleanArray selectedItems;
-    private static int currentSelectedIndex = -1;
-    // Create new views (invoked by the layout manager)
-    @Override
-    public NewsAdapter.MyViewHolder onCreateViewHolder(ViewGroup parent,
-                                                       int viewType) {
-        // create a new view
-        View itemViews = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.news_items_layout, parent, false);
-        return new MyViewHolder(itemViews);
-    }
 
     // Provide a suitable constructor (depends on the kind of dataset)
     public NewsAdapter(Context mContext, ArrayList<BadNews> news, ClickAdapterListener listener) {
@@ -43,6 +33,16 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.MyViewHolder> 
         mNews = news;
         this.listener = listener;
         selectedItems = new SparseBooleanArray();
+    }
+
+    // Create new views (invoked by the layout manager)
+    @Override
+    public NewsAdapter.MyViewHolder onCreateViewHolder(ViewGroup parent,
+                                                       int viewType) {
+        // create a new view
+        View itemViews = LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.news_items_layout, parent, false);
+        return new MyViewHolder(itemViews);
     }
 
     // Replace the contents of a view (invoked by the layout manager)
@@ -66,11 +66,11 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.MyViewHolder> 
                 + myUrl
                 + "</a>";
 
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                slink.setText(Html.fromHtml(surl, Html.FROM_HTML_MODE_COMPACT));
-            } else {
-                slink.setText(Html.fromHtml(surl));
-            }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            slink.setText(Html.fromHtml(surl, Html.FROM_HTML_MODE_COMPACT));
+        } else {
+            slink.setText(Html.fromHtml(surl));
+        }
 
         //slink.setText(Html.fromHtml(surl, Html.FROM_HTML_MODE_COMPACT));
         TextView sAuthorName = linearLayout.findViewById(R.id.author_text);
@@ -93,34 +93,60 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.MyViewHolder> 
             }
 
         });
-        //if (mNews.get(position).colored)
-        //    holder.textView.setTextColor(mContext.getResources().getColor(android.R.color.holo_red_dark));
-        //holder.itemView.setActivated(selectedItems.get(position, false));
-        //applyClickEvents(holder, position);
-    }
-
-    private void applyClickEvents(MyViewHolder holder, final int position) {
-        holder.linearLayout.setOnClickListener(new View.OnClickListener() {
+        stitle.setOnClickListener(new View.OnClickListener() {
+            // The code in this method will be executed when the numbers category is clicked on.
             @Override
             public void onClick(View view) {
-                listener.onRowClicked(position);
+                Uri webpage = Uri.parse(myUrl);
+                Intent sBrowser = new Intent(Intent.ACTION_VIEW, webpage);
+                startActivity(view.getContext(), sBrowser, null);
             }
-        });
 
-        holder.linearLayout.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View view) {
-                listener.onRowLongClicked(position);
-                view.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
-                return true;
-            }
         });
     }
+
+
 
     // Return the size of your dataset (invoked by the layout manager)
     @Override
     public int getItemCount() {
         return mNews.size();
+    }
+
+
+    public void toggleSelection(int pos) {
+        currentSelectedIndex = pos;
+        if (selectedItems.get(pos, false)) {
+            selectedItems.delete(pos);
+        } else {
+            selectedItems.put(pos, true);
+        }
+        notifyItemChanged(pos);
+    }
+
+    public void selectAll() {
+
+        for (int i = 0; i < getItemCount(); i++)
+            selectedItems.put(i, true);
+        notifyDataSetChanged();
+
+    }
+
+    public void clearSelections() {
+        selectedItems.clear();
+        notifyDataSetChanged();
+    }
+
+    public int getSelectedItemCount() {
+        return selectedItems.size();
+    }
+
+
+    public interface ClickAdapterListener {
+
+        void onRowClicked(int position);
+
+        void onRowLongClicked(int position);
     }
 
     // Provide a reference to the views for each data item
@@ -146,67 +172,6 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.MyViewHolder> 
             view.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
             return true;
         }
-    }
-
-
-   
-
-    public void toggleSelection(int pos) {
-        currentSelectedIndex = pos;
-        if (selectedItems.get(pos, false)) {
-            selectedItems.delete(pos);
-        } else {
-            selectedItems.put(pos, true);
-        }
-        notifyItemChanged(pos);
-    }
-
-    public void selectAll() {
-
-        for (int i = 0; i < getItemCount(); i++)
-            selectedItems.put(i, true);
-        notifyDataSetChanged();
-
-    }
-
-
-    public void clearSelections() {
-        selectedItems.clear();
-        notifyDataSetChanged();
-    }
-
-    public int getSelectedItemCount() {
-        return selectedItems.size();
-    }
-
-    public List getSelectedItems() {
-        List items =
-                new ArrayList(selectedItems.size());
-        for (int i = 0; i < selectedItems.size(); i++) {
-            items.add(selectedItems.keyAt(i));
-        }
-        return items;
-    }
-
-    public void removeData(int position) {
-        mNews.remove(position);
-        resetCurrentIndex();
-    }
-
-    public void updateData(int position) {
-        mNews.get(position).colored = true;
-        resetCurrentIndex();
-    }
-
-    private void resetCurrentIndex() {
-        currentSelectedIndex = -1;
-    }
-
-    public interface ClickAdapterListener {
-
-        void onRowClicked(int position);
-
-        void onRowLongClicked(int position);
     }
 
 }

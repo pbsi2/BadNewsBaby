@@ -11,13 +11,11 @@ import java.util.GregorianCalendar;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
 
-public class MainActivity extends AppCompatActivity implements NavigationHost {
+public class MainActivity extends AppCompatActivity {
 
     public static String guardianUrl;
-    public static String keyText;
+    public static String okeyText;
     public static String startDate;
     public static String endDate;
     private Toolbar mTopToolbar;
@@ -26,17 +24,13 @@ public class MainActivity extends AppCompatActivity implements NavigationHost {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        mTopToolbar = (Toolbar) findViewById(R.id.toolbar);
+        mTopToolbar = findViewById(R.id.toolbar);
         setSupportActionBar(mTopToolbar);
-        if (savedInstanceState == null) {
-           ;
-        }
-        /**
-         * Date date = new Date();
-         SimpleDateFormat ft =
-         new SimpleDateFormat ("yyyy-MM-dd");
-         String formatted = String.format("%03d", num);
-         */
+        mTopToolbar.setLogo(R.mipmap.ic_badnews);
+        /*
+        Format the query dates correctly
+        */
+
         GregorianCalendar gcalendar = new GregorianCalendar();
         String eydate = String.format("%04d", gcalendar.get(GregorianCalendar.YEAR));
         String emdate = String.format("%02d", gcalendar.get(GregorianCalendar.MONTH) + 1);
@@ -63,19 +57,7 @@ public class MainActivity extends AppCompatActivity implements NavigationHost {
 
     }
 
-    @Override
-    public void navigateTo(Fragment fragment, boolean addToBackstack) {
-        FragmentTransaction transaction =
-                getSupportFragmentManager()
-                        .beginTransaction()
-                        .replace(R.id.container, fragment);
 
-        if (addToBackstack) {
-            transaction.addToBackStack(null);
-        }
-
-        transaction.commit();
-    }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.

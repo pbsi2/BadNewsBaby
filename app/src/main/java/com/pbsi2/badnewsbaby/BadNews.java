@@ -87,5 +87,5 @@ public class BadNews {
     public String getDate() {
         return date;
     }
-    public boolean getColored() { return colored;}
+
 }
